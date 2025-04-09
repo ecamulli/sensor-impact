@@ -145,11 +145,19 @@ if run_report:
                     aggfunc="sum"
                 ).reset_index().sort_values(by="Critical Hours Per Day", ascending=False)
 
-                # Write both to Excel
+                # Write both to Excel with auto-sizing columns
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
                     df.to_excel(writer, index=False, sheet_name="Detailed Report")
                     pivot.to_excel(writer, index=False, sheet_name="Summary Report")
+
+                    workbook = writer.book
+                    for sheet_name, dataframe in zip(["Detailed Report", "Summary Report"], [df, pivot]):
+                        worksheet = writer.sheets[sheet_name]
+                        for i, column in enumerate(dataframe.columns):
+                            column_width = max(12, dataframe[column].astype(str).map(len).max())
+                            worksheet.set_column(i, i, column_width)
+
                 output.seek(0)
 
                 st.success("✅ Report generated!")
@@ -160,4 +168,4 @@ if run_report:
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
             else:
-                st.warning("No KPI results found.")
+                st.warning("No results found.")
