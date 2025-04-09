@@ -146,12 +146,27 @@ if run_report:
     aggfunc="sum"
 ).reset_index()
 
-# Rename columns to include '_Critical Hours Per Day'
-new_columns = [
-    col if isinstance(col, str) else f"{col}_Critical Hours Per Day"
-    for col in pivot.columns
-]
-pivot.columns = new_columns
+# Format pivot table with KPI columns and totals
+                pivot = df.pivot_table(
+                    index=["Service Area", "Network", "Band"],
+                    columns="KPI Name",
+                    values="Critical Hours Per Day",
+                    aggfunc="sum"
+                ).reset_index()
+
+                # Rename columns to include '_Critical Hours Per Day'
+                new_columns = [
+                    col if isinstance(col, str) else f"{col}_Critical Hours Per Day"
+                    for col in pivot.columns
+                ]
+                pivot.columns = new_columns
+
+                # Format numeric columns to 2 decimal places
+                kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
+                pivot[kpi_cols] = pivot[kpi_cols].applymap(lambda x: round(x, 2) if pd.notnull(x) else x)
+
+                # Add total column
+                pivot["Total Critical Hours Per Day"] = pivot[kpi_cols].sum(axis=1)
 
 # Format numeric columns to 2 decimal places
 kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
