@@ -159,6 +159,9 @@ if run_report:
                 kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
                 pivot["Total Critical Hours Per Day"] = pivot[kpi_cols].sum(axis=1)
 
+                # Sort by Total Critical Hours Per Day descending
+                pivot = pivot.sort_values(by="Total Critical Hours Per Day", ascending=False)
+
 # Write both to Excel with auto-sizing columns
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
