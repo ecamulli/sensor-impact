@@ -15,7 +15,7 @@ account_name = st.text_input("Account Name")
 client_id = st.text_input("Client ID")
 client_secret = st.text_input("Client Secret", type="password")
 kpi_codes_input = st.text_input("Enter up to 4 KPI codes (comma-separated)")
-days_back = st.number_input("Days back", min_value=1, max_value=30, value=7)
+days_back = st.number_input("Days back (max 30)", min_value=1, max_value=30, value=7)
 
 run_report = st.button("Generate Impact Report")
 
@@ -39,7 +39,7 @@ def authenticate(client_id, client_secret):
         st.error(f"Auth error: {e}")
     return None
 
-def safe_get(url, headers, retries=3, delay=5):
+def safe_get(url, headers, retries=1, delay=3):
     for attempt in range(retries):
         try:
             response = requests.get(url, headers=headers, timeout=60)
@@ -127,7 +127,7 @@ if run_report:
 
             st.info("Running report...")
             results = []
-            with ThreadPoolExecutor(max_workers=4) as executor:
+            with ThreadPoolExecutor(max_workers=8) as executor:
                 futures = [
                     executor.submit(get_kpi_data, headers, sa, net, code, from_time, to_time, days_back)
                     for sa in service_areas for net in networks for code in kpi_codes
