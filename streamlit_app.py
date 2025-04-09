@@ -161,27 +161,7 @@ if run_report:
                 ]
                 pivot.columns = new_columns
 
-                # Format numeric columns to 2 decimal places
-                kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
-                pivot[kpi_cols] = pivot[kpi_cols].applymap(lambda x: round(x, 2) if pd.notnull(x) else x)
-
-                # Add total column
-                pivot["Total Critical Hours Per Day"] = pivot[kpi_cols].sum(axis=1)
-
-# Format numeric columns to 2 decimal places
-kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
-pivot[kpi_cols] = pivot[kpi_cols].applymap(lambda x: round(x, 2) if pd.notnull(x) else x)
-
-# Add total column
-pivot["Total Critical Hours Per Day"] = pivot[kpi_cols].sum(axis=1)
-
-# Rename columns to include '_Critical Hours Per Day'
-new_columns = [
-    col if isinstance(col, str) else f"{col}_Critical Hours Per Day"
-    for col in pivot.columns
-]
-pivot.columns = new_columns
-
+                
                 # Write both to Excel with auto-sizing columns
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
