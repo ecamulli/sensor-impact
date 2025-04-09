@@ -17,7 +17,7 @@ client_secret = st.text_input("Client Secret", type="password")
 kpi_codes_input = st.text_input("Enter up to 4 KPI codes (comma-separated)")
 days_back = st.number_input("Days back", min_value=1, max_value=30, value=7)
 
-run_report = st.button("Generate KPI Report")
+run_report = st.button("Generate Impact Report")
 
 def authenticate(client_id, client_secret):
     auth_data = {
@@ -127,7 +127,7 @@ if run_report:
 
             st.info("Running report...")
             results = []
-            with ThreadPoolExecutor(max_workers=3) as executor:
+            with ThreadPoolExecutor(max_workers=4) as executor:
                 futures = [
                     executor.submit(get_kpi_data, headers, sa, net, code, from_time, to_time, days_back)
                     for sa in service_areas for net in networks for code in kpi_codes
