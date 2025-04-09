@@ -7,8 +7,8 @@ import os
 from io import BytesIO
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-st.set_page_config(page_title="7SIGNAL Sensor Impact Report Tool")
-st.title("📊 7SIGNAL KPI Report Generator")
+st.set_page_config(page_title="7SIGNAL Sensor Impact Report Generator")
+st.title("📊 7SIGNAL Sensor Impact Report Generator")
 
 # Input fields
 account_name = st.text_input("Account Name")
