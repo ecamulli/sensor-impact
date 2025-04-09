@@ -154,15 +154,19 @@ if run_report:
                     aggfunc="sum"
                 ).reset_index()
 
-                # Rename columns to include '_Critical Hours Per Day'
-                new_columns = [
-                    col if isinstance(col, str) else f"{col}_Critical Hours Per Day"
-                    for col in pivot.columns
-                ]
-                pivot.columns = new_columns
+                # Rename columns to include ' Critical Hours Per Day'
+new_columns = [
+    col if isinstance(col, str) else f"{col} Critical Hours Per Day"
+    for col in pivot.columns
+]
+pivot.columns = new_columns
 
                 
-                # Write both to Excel with auto-sizing columns
+                # Add Total Critical Hours Per Day column
+kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
+pivot["Total Critical Hours Per Day"] = pivot[kpi_cols].sum(axis=1)
+
+# Write both to Excel with auto-sizing columns
                 output = BytesIO()
                 with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
                     df.to_excel(writer, index=False, sheet_name="Detailed Report")
