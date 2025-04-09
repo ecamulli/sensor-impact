@@ -139,14 +139,7 @@ if run_report:
                 df = pd.DataFrame(results)
                 today_str = datetime.now().strftime("%Y-%m-%d")
 
-                pivot = df.pivot_table(
-    index=["Service Area", "Network", "Band"],
-    columns="KPI Name",
-    values="Critical Hours Per Day",
-    aggfunc="sum"
-).reset_index()
-
-# Format pivot table with KPI columns and totals
+                # Format pivot table with KPI columns and totals
                 pivot = df.pivot_table(
                     index=["Service Area", "Network", "Band"],
                     columns="KPI Name",
@@ -155,16 +148,16 @@ if run_report:
                 ).reset_index()
 
                 # Rename columns to include ' Critical Hours Per Day'
-new_columns = [
-    col if isinstance(col, str) else f"{col} Critical Hours Per Day"
-    for col in pivot.columns
-]
-pivot.columns = new_columns
+                new_columns = [
+                    col if isinstance(col, str) else f"{col} Critical Hours Per Day"
+                    for col in pivot.columns
+                ]
+                pivot.columns = new_columns
 
                 
                 # Add Total Critical Hours Per Day column
-kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
-pivot["Total Critical Hours Per Day"] = pivot[kpi_cols].sum(axis=1)
+                kpi_cols = [col for col in pivot.columns if col not in ["Service Area", "Network", "Band"]]
+                pivot["Total Critical Hours Per Day"] = pivot[kpi_cols].sum(axis=1)
 
 # Write both to Excel with auto-sizing columns
                 output = BytesIO()
