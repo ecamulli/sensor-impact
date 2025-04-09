@@ -7,7 +7,7 @@ import os
 from io import BytesIO
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-st.set_page_config(page_title="7SIGNAL KPI Report Tool")
+st.set_page_config(page_title="7SIGNAL Sensor Impact Report Tool")
 st.title("📊 7SIGNAL KPI Report Generator")
 
 # Input fields
@@ -139,25 +139,25 @@ if run_report:
                 df = pd.DataFrame(results)
                 today_str = datetime.now().strftime("%Y-%m-%d")
 
-                st.success("Report generated!")
-                st.download_button(
-                    label="📥 Download Detailed Report",
-                    data=df.to_csv(index=False).encode(),
-                    file_name=f"{account_name}_kpi_service_area_report_{today_str}.csv",
-                    mime="text/csv"
-                )
-
                 pivot = df.pivot_table(
                     index=["Service Area", "Network", "Band"],
                     values="Critical Hours Per Day",
                     aggfunc="sum"
                 ).reset_index().sort_values(by="Critical Hours Per Day", ascending=False)
 
+                # Write both to Excel
+                output = BytesIO()
+                with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+                    df.to_excel(writer, index=False, sheet_name="Detailed Report")
+                    pivot.to_excel(writer, index=False, sheet_name="Summary Report")
+                output.seek(0)
+
+                st.success("✅ Report generated!")
                 st.download_button(
-                    label="📥 Download Summary Report",
-                    data=pivot.to_csv(index=False).encode(),
-                    file_name=f"{account_name}_summary_critical_hours_{today_str}.csv",
-                    mime="text/csv"
+                    label="📥 Download Excel Report (2 tabs)",
+                    data=output,
+                    file_name=f"{account_name}_kpi_report_{today_str}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
             else:
                 st.warning("No KPI results found.")
