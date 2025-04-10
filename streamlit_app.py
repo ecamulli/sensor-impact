@@ -172,7 +172,7 @@ if run_report:
                     for sheet_name, dataframe in zip(["Detailed Report", "Summary Report"], [df, pivot]):
                         worksheet = writer.sheets[sheet_name]
                         for i, column in enumerate(dataframe.columns):
-                            column_width = max(12, dataframe[column].astype(str).map(len).max())
+                            column_width = max(23, dataframe[column].astype(str).map(len).max())
                             worksheet.set_column(i, i, column_width)
 
                 output.seek(0)
