@@ -15,9 +15,9 @@ account_name = st.text_input("Account Name")
 client_id = st.text_input("Client ID")
 client_secret = st.text_input("Client Secret", type="password")
 kpi_codes_input = st.text_input("Enter up to 4 KPI codes (comma-separated)")
-days_back = st.number_input("Days back", min_value=1, max_value=30, value=7)
+days_back = st.number_input("Days back (max 30)", min_value=1, max_value=30, value=7)
 
-run_report = st.button("Generate KPI Report")
+run_report = st.button("Generate Impact Report")
 
 def authenticate(client_id, client_secret):
     auth_data = {
