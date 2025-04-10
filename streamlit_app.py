@@ -181,7 +181,7 @@ if run_report:
                 st.download_button(
                     label="📥 Download Excel Report (2 tabs)",
                     data=output,
-                    file_name=f"{account_name}_kpi_report_{today_str}.xlsx",
+                    file_name=f"{account_name}_sensor_impact_report_{today_str}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
             else:
